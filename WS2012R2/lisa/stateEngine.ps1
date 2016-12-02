@@ -3340,6 +3340,17 @@ function DoPS1TestCompleted ([System.Xml.XmlElement] $vm, [XML] $xmlData)
             }
         }
 
+        if ($completionCode -eq "Failed" -and $collect -eq "True")
+        {
+            LogMsg 4 "Info : $($vm.vmName) generating general logfile"
+            GenerateGeneralLogFile $vm
+            $generalLog = "$($vm.vmName)_${currentTest}_logs.log"
+            if (-not (GetFileFromVM $vm "generalinfo.log" "${testDir}\${generalLog}") )
+            {
+                LogMsg 0 "Error: $($vm.vmName) DoCollectLogFiles() is unable to collect ${generalLog}"
+            }
+        }
+
         Remove-Job -Id $jobID
     }
 
